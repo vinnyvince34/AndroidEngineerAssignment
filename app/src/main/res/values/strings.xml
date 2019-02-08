@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MiniProject</string>
+    <string name="button">Button</string>
+    <string name="index">Index</string>
+    <string name="edit_user">Edit User</string>
+    <string name="add_user">Add User</string>
+    <string name="id">ID</string>
+    <string name="_1">1</string>
+    <string name="edit">Edit</string>
+</resources>
