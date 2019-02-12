@@ -2,9 +2,15 @@ package com.example.miniproject;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
+import android.view.Menu;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,263 +20,75 @@ import android.widget.Button;
 
 //Edit Page
 public class Main3Activity extends AppCompatActivity {
-
-    Intent intent = getIntent();
-
+    Intent intent;
+    Users toEdit = null;
+    Users toAdd = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        ActionBar ActionB = new ActionBar() {
-            @Override
-            public void setCustomView(View view) {
-
-            }
-
-            @Override
-            public void setCustomView(View view, LayoutParams layoutParams) {
-
-            }
-
-            @Override
-            public void setCustomView(int i) {
-
-            }
-
-            @Override
-            public void setIcon(int i) {
-
-            }
-
-            @Override
-            public void setIcon(Drawable drawable) {
-
-            }
-
-            @Override
-            public void setLogo(int i) {
-
-            }
-
-            @Override
-            public void setLogo(Drawable drawable) {
-
-            }
-
-            @Override
-            public void setListNavigationCallbacks(SpinnerAdapter spinnerAdapter, OnNavigationListener onNavigationListener) {
-
-            }
-
-            @Override
-            public void setSelectedNavigationItem(int i) {
-
-            }
-
-            @Override
-            public int getSelectedNavigationIndex() {
-                return 0;
-            }
-
-            @Override
-            public int getNavigationItemCount() {
-                return 0;
-            }
-
-            @Override
-            public void setTitle(CharSequence charSequence) {
-
-            }
-
-            @Override
-            public void setTitle(int i) {
-
-            }
-
-            @Override
-            public void setSubtitle(CharSequence charSequence) {
-
-            }
-
-            @Override
-            public void setSubtitle(int i) {
-
-            }
-
-            @Override
-            public void setDisplayOptions(int i) {
-
-            }
-
-            @Override
-            public void setDisplayOptions(int i, int i1) {
-
-            }
-
-            @Override
-            public void setDisplayUseLogoEnabled(boolean b) {
-
-            }
-
-            @Override
-            public void setDisplayShowHomeEnabled(boolean b) {
-
-            }
-
-            @Override
-            public void setDisplayHomeAsUpEnabled(boolean b) {
-
-            }
-
-            @Override
-            public void setDisplayShowTitleEnabled(boolean b) {
-
-            }
-
-            @Override
-            public void setDisplayShowCustomEnabled(boolean b) {
-
-            }
-
-            @Override
-            public void setBackgroundDrawable(@Nullable Drawable drawable) {
-
-            }
-
-            @Override
-            public View getCustomView() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public CharSequence getTitle() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public CharSequence getSubtitle() {
-                return null;
-            }
-
-            @Override
-            public int getNavigationMode() {
-                return 0;
-            }
-
-            @Override
-            public void setNavigationMode(int i) {
-
-            }
-
-            @Override
-            public int getDisplayOptions() {
-                return 0;
-            }
-
-            @Override
-            public Tab newTab() {
-                return null;
-            }
-
-            @Override
-            public void addTab(Tab tab) {
-
-            }
-
-            @Override
-            public void addTab(Tab tab, boolean b) {
-
-            }
-
-            @Override
-            public void addTab(Tab tab, int i) {
-
-            }
-
-            @Override
-            public void addTab(Tab tab, int i, boolean b) {
-
-            }
-
-            @Override
-            public void removeTab(Tab tab) {
-
-            }
-
-            @Override
-            public void removeTabAt(int i) {
-
-            }
-
-            @Override
-            public void removeAllTabs() {
-
-            }
-
-            @Override
-            public void selectTab(Tab tab) {
-
-            }
-
-            @Nullable
-            @Override
-            public Tab getSelectedTab() {
-                return null;
-            }
-
-            @Override
-            public Tab getTabAt(int i) {
-                return null;
-            }
-
-            @Override
-            public int getTabCount() {
-                return 0;
-            }
-
-            @Override
-            public int getHeight() {
-                return 0;
-            }
-
-            @Override
-            public void show() {
-
-            }
-
-            @Override
-            public void hide() {
-
-            }
-
-            @Override
-            public boolean isShowing() {
-                return false;
-            }
-
-            @Override
-            public void addOnMenuVisibilityListener(OnMenuVisibilityListener onMenuVisibilityListener) {
-
-            }
-
-            @Override
-            public void removeOnMenuVisibilityListener(OnMenuVisibilityListener onMenuVisibilityListener) {
-
-            }
-        };
+        final TextInputEditText AddressInput = (TextInputEditText) findViewById(R.id.AddressInput);
+        final TextInputEditText PhoneInput = (TextInputEditText) findViewById(R.id.PhoneInput);
+        Button SaveBtn = (Button) findViewById(R.id.SaveBtn);
+        TextView textView = (TextView) findViewById(R.id.TextView);
+        ActionBar actionBar =getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if(MainActivity.bEdit == true) {
+            intent = getIntent();
+            toEdit = (Users) intent.getParcelableExtra("EditUser");
+
+            textView.setText("Edit User");
+            AddressInput.setText(toEdit.getsAddress());
+            PhoneInput.setText(toEdit.getsPhone());
+
+            SaveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String sNewAddress = String.valueOf(AddressInput.getText());
+                    String sNewPhone = String.valueOf(PhoneInput.getText());
+                    toEdit.setsAddress(sNewAddress);
+                    toEdit.setsPhone(sNewPhone);
+                    Intent passIntent = new Intent(v.getContext(), MainActivity.class).putExtra("UpdateData", (Parcelable) toEdit);
+                    setResult(RESULT_OK, passIntent);
+                    finish();
+                }
+            });
+        } else {
+            intent = getIntent();
+            toAdd = new Users();
+
+            textView.setText("Add User");
+
+            SaveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String sNewAddress = String.valueOf(AddressInput.getText());
+                    String sNewPhone = String.valueOf(PhoneInput.getText());
+                    toAdd.setsID(Integer.toString(MainActivity.nListSize + 1));
+                    toAdd.setsAddress(sNewAddress);
+                    toAdd.setsPhone(sNewPhone);
+                    Intent passIntent = new Intent(v.getContext(), MainActivity.class).putExtra("AddData", (Parcelable) toAdd);
+                    setResult(RESULT_OK, passIntent);
+                    finish();
+                }
+            });
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_OK, intent);
+                MainActivity.bIntentEmpty = true;
+                Intent exitIntent = new Intent(this, MainActivity.class);
+                startActivity(exitIntent);
                 finish();
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }

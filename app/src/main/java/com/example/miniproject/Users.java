@@ -1,6 +1,9 @@
 package com.example.miniproject;
 
-public class Users {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Users implements Parcelable {
     private String sID = "";
     private String sAddress = "";
     private String sPhone = "";
@@ -16,6 +19,24 @@ public class Users {
         sAddress = y;
         sPhone = z;
     }
+
+    protected Users(Parcel in) {
+        sID = in.readString();
+        sAddress = in.readString();
+        sPhone = in.readString();
+    }
+
+    public static final Creator<Users> CREATOR = new Creator<Users>() {
+        @Override
+        public Users createFromParcel(Parcel in) {
+            return new Users(in);
+        }
+
+        @Override
+        public Users[] newArray(int size) {
+            return new Users[size];
+        }
+    };
 
     public String getsID() {
         return sID;
@@ -46,5 +67,17 @@ public class Users {
         return "ID: " + sID + '\n' +
                 "Address: " + sAddress + '\n' +
                 "Phone: " + sPhone + '\n';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(sID);
+        dest.writeString(sAddress);
+        dest.writeString(sPhone);
     }
 }

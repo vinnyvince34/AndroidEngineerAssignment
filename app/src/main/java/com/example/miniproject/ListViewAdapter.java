@@ -1,16 +1,19 @@
 package com.example.miniproject;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.app.Activity;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ListViewAdapter extends BaseAdapter {
+    public static final int REQUEST_CODE = 1;
     public ArrayList<Users> List;
     Activity activity;
 
@@ -40,11 +43,12 @@ public class ListViewAdapter extends BaseAdapter {
         TextView tvAddress;
         TextView tvPhone;
         Button btnEdit;
+        ListView lv;
     }
 
-    public View getView(int position, View convertView, final ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
-        ViewHolder holder;
+        final ViewHolder holder;
         LayoutInflater inflater = activity.getLayoutInflater();
 
         if (convertView == null) {
@@ -55,6 +59,7 @@ public class ListViewAdapter extends BaseAdapter {
             holder.tvPhone = (TextView) convertView
                     .findViewById(R.id.Phone);
             holder.btnEdit = (Button) convertView.findViewById(R.id.edit);
+            holder.lv = (ListView) convertView.findViewById(R.id.DataList);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -70,8 +75,10 @@ public class ListViewAdapter extends BaseAdapter {
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(v.getContext(), Main3Activity.class);
-                v.getContext().startActivity(intent);
+                MainActivity.bEdit = true;
+                MainActivity.bIntentEmpty = false;
+                Intent intent=new Intent(v.getContext(), Main3Activity.class).putExtra("EditUser", (Parcelable) List.get(position));
+                activity.startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
