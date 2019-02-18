@@ -1,6 +1,9 @@
 package com.example.miniproject;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.service.autofill.SaveInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +28,13 @@ public class MainActivity extends AppCompatActivity {
     protected ListViewAdapter adapter;
     protected int nSelectedIndex = 0;
     public static boolean bEdit = false;
+    public static boolean bDelete = false;
     public static boolean bIntentEmpty = true;
     public static int nListSize = 0;
+    public static Context context;
+    public static SQLiteDatabase db = null;
+    public static DBHelper helper;
+    public static Cursor result;
 
     public Intent getMainIntent() {
         return  mainIntent;
@@ -57,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MainActivity.context = getApplicationContext();
+        helper = new DBHelper(context);
+
         final Button button = (Button) findViewById(R.id.button);
         button.setText("Add");
         List = new ArrayList<Users>();
@@ -64,11 +75,40 @@ public class MainActivity extends AppCompatActivity {
             uBackup.add(List.get(i));
         }
         final ListView lv = (ListView) findViewById(R.id.DataList);
-        adapter = new ListViewAdapter(this, List);
+//        populateList();
+
+        db = helper.getWritableDatabase();
+
+        result = db.rawQuery("SELECT  * FROM User", null);
+        if (result != null && result.getCount() > 0){
+            result.moveToFirst();
+            Log.d("MainActivity", "NotNull");
+        } else {
+            helper.insert("1","A1", "123");
+            helper.insert("2","B1", "521");
+            helper.insert("3","C3", "983");
+            helper.insert("4","D6", "457");
+            helper.insert("5","E7", "948");
+            result.moveToFirst();
+            Log.d("MainActivity", "Null");
+        }
+
+        int i = 0;
+        String tempID = "";
+        String tempAddress = "";
+        String tempPhone = "";
+        while(!result.isAfterLast() ) {
+            tempID = result.getString(result.getColumnIndex("ID"));
+            tempAddress = result.getString(result.getColumnIndex("Address"));
+            tempPhone = result.getString(result.getColumnIndex("Phone_Number"));
+            List.add(new Users(tempID, tempAddress, tempPhone));
+            i++;
+            Log.d("MainActivity", "Value of i: " + i);
+            result.moveToNext();
+        }
+
+        adapter = new ListViewAdapter(this, List, helper, db);
         lv.setAdapter(adapter);
-
-        populateList();
-
         adapter.notifyDataSetChanged();
 
         nListSize = List.size();
@@ -98,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
+
     }
 
     @Override
@@ -122,9 +163,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("MainActivity",List.get(0).getsAddress() + "\n");
                     Log.d("MainActivity",List.get(0).getsPhone() + "\n");
                     if (resultCode == Activity.RESULT_OK) {
-                        for(int i = 0; i < List.size(); i++) {
+                        for(int i = 0; i <= List.size(); i++) {
                             if(i == Integer.parseInt(receiver.getsID())) {
                                 List.set(Integer.parseInt(receiver.getsID()) - 1, new Users(receiver.getsID(), receiver.getsAddress(), receiver.getsPhone()));
+                                helper.update(Integer.toString(List.size() + 1), receiver.getsAddress(), receiver.getsPhone());
                                 adapter.notifyDataSetInvalidated();
                                 break;
                             }
@@ -138,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("MainActivity",List.get(0).getsPhone() + "\n");
                     if (resultCode == Activity.RESULT_OK) {
                         List.add(List.size(), new Users(Integer.toString(List.size() + 1), receiver.getsAddress(), receiver.getsPhone()));
+                        helper.insert(Integer.toString(List.size() + 1), receiver.getsAddress(), receiver.getsPhone());
                         adapter.notifyDataSetInvalidated();
                     } else if (resultCode == Activity.RESULT_CANCELED) {
                         return;

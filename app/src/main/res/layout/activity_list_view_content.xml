@@ -53,13 +53,20 @@
 
         <Button
             android:id="@+id/edit"
-            android:layout_width="195dp"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:text="@string/edit"
             android:textColor="#000" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="78dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Delete" />
 
     </LinearLayout>
 

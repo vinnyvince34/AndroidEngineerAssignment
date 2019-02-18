@@ -1,22 +1,16 @@
 package com.example.miniproject;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.Menu;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
-import android.widget.Toolbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 //Edit Page
 public class Main3Activity extends AppCompatActivity {
